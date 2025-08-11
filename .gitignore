@@ -1,0 +1,14 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Env & local config
+.env
+.env.*
+.envrc
+
+# dbt
+target/
+dbt_packages/
+logs/
