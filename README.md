@@ -5,7 +5,8 @@ It uses the Bronze → Silver architecture pattern:
 - Bronze layer: raw ingestion of financial price data.
 - Silver layer: cleaned, deduplicated, and type-cast tables ready for analytics.
 
-File Structure
+File Structure  
+
 sql/  
 
 │  
