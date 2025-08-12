@@ -8,10 +8,14 @@ It uses the Bronze → Silver architecture pattern:
 File Structure
 sql/
 │
-├── 01_create_bronze_objects.sql       # Create Bronze tables and stages
-├── 02_create_silver_prices.sql        # Create Silver PRICES table
-├── 03_create_bronze_v_prices_raw.sql  # Bronze view for raw prices
-├── 04_merge_bronze_to_silver.sql      # Merge logic from Bronze to Silver
+├── 01_create_bronze_objects.sql       # Create Bronze tables and stages  
+
+├── 02_create_silver_prices.sql        # Create Silver PRICES table  
+
+├── 03_create_bronze_v_prices_raw.sql  # Bronze view for raw prices  
+
+├── 04_merge_bronze_to_silver.sql      # Merge logic from Bronze to Silver  
+
 └── setup.sql                          # My environment setup
 
 Transformations in Silver
