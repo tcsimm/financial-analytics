@@ -26,7 +26,6 @@ def connect_snowflake():
     )
 
 def _flatten_columns(cols) -> List[str]:
-    """Flatten plain or MultiIndex columns to snake_case strings."""
     if isinstance(cols, pd.MultiIndex):
         out = []
         for tup in cols:
@@ -38,15 +37,12 @@ def _flatten_columns(cols) -> List[str]:
     return [c.strip().lower().replace(" ", "_") for c in cols]
 
 def yf_download(ticker: str, period: str, interval: str) -> pd.DataFrame:
-    """
-    Download from yfinance and return a normalized DataFrame with a 'date_str' column.
-    """
     df = yf.download(
         ticker,
         period=period,
         interval=interval,
         auto_adjust=False,
-        group_by="column",   # avoid ('AAPL','Open') style columns
+        group_by="column", 
         threads=True,
         progress=False,
     )
@@ -56,7 +52,7 @@ def yf_download(ticker: str, period: str, interval: str) -> pd.DataFrame:
     df = df.reset_index()
     df.columns = _flatten_columns(df.columns)
 
-    # Determine the datetime column
+    # Determine datetime column
     dt_col = "date" if "date" in df.columns else ("datetime" if "datetime" in df.columns else None)
     if not dt_col:
         return pd.DataFrame()
@@ -80,14 +76,14 @@ def df_to_rows(ticker: str, df: pd.DataFrame) -> List[Tuple[str, str]]:
     if df.empty:
         return []
 
-    # Ensure the expected columns exist even if yfinance omitted some
+    # Ensure expected columns exist
     for col in ["date_str", "open", "high", "low", "close", "adj_close", "volume"]:
         if col not in df.columns:
             df[col] = pd.NA
 
     rows: List[Tuple[str, str]] = []
 
-    # Use itertuples for speed; columns are already snake_case
+    # Use itertuples for speed
     for r in df[["date_str", "open", "high", "low", "close", "adj_close", "volume"]].itertuples(index=False, name=None):
         date_str, open_, high_, low_, close_, adj_close_, volume_ = r
 
