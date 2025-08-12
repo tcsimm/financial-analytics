@@ -9,7 +9,7 @@ load_dotenv()
 
 # Connect to database
 conn = snowflake.connector.connect(
-    account=os.getenv("SNOW_ACCOUNT"),
+    account=os.getenv("SNOW_ACCOUNT"),  
     user=os.getenv("SNOW_USER"),
     password=os.getenv("SNOW_PASSWORD"),
     role=os.getenv("SNOW_ROLE", "FINLAB_ROLE"),
