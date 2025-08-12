@@ -73,23 +73,36 @@ def yf_download(ticker: str, period: str, interval: str) -> pd.DataFrame:
     return df
 
 def df_to_rows(ticker: str, df: pd.DataFrame) -> List[Tuple[str, str]]:
-    """Transform normalized DF into list of (ticker, json_string) rows."""
+    """
+    Transform normalized DF into list of (ticker, json_string) rows.
+    Assumes df has columns: date_str, open, high, low, close, adj_close, volume.
+    """
     if df.empty:
         return []
-    recs = df[["date_str", "open", "high", "low", "close", "adj_close", "volume"]].to_dict(orient="records")
+
+    # Ensure the expected columns exist even if yfinance omitted some
+    for col in ["date_str", "open", "high", "low", "close", "adj_close", "volume"]:
+        if col not in df.columns:
+            df[col] = pd.NA
 
     rows: List[Tuple[str, str]] = []
-    for r in recs:
+
+    # Use itertuples for speed; columns are already snake_case
+    for r in df[["date_str", "open", "high", "low", "close", "adj_close", "volume"]].itertuples(index=False, name=None):
+        date_str, open_, high_, low_, close_, adj_close_, volume_ = r
+
         payload = {
-            "date": r["date_str"],
-            "open": None if pd.isna(r["open"]) else float(r["open"]),
-            "high": None if pd.isna(r["high"]) else float(r["high"]),
-            "low": None if pd.isna(r["low"]) else float(r["low"]),
-            "close": None if pd.isna(r["close"]) else float(r["close"]),
-            "adj_close": None if pd.isna(r["adj_close"]) else float(r["adj_close"]),
-            "volume": None if pd.isna(r["volume"]) else int(r["volume"]),
+            "date": str(date_str),
+            "open":   None if pd.isna(open_)      else float(open_),
+            "high":   None if pd.isna(high_)      else float(high_),
+            "low":    None if pd.isna(low_)       else float(low_),
+            "close":  None if pd.isna(close_)     else float(close_),
+            "adj_close": None if pd.isna(adj_close_) else float(adj_close_),
+            "volume": None if pd.isna(volume_)    else int(volume_),
         }
+
         rows.append((ticker, json.dumps(payload)))
+
     return rows
 
 def insert_rows(conn, rows: Iterable[Tuple[str, str]], table_fqn: str = "FINLAB.BRONZE.PRICES_RAW") -> int:
