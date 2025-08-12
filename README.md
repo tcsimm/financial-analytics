@@ -9,7 +9,6 @@ File Structure
 
 sql/  
 
-│  
 
 ├── 01_create_bronze_objects.sql       # Create Bronze tables and stages  
 
