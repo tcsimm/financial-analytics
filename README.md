@@ -6,8 +6,10 @@ It uses the Bronze → Silver architecture pattern:
 - Silver layer: cleaned, deduplicated, and type-cast tables ready for analytics.
 
 File Structure
-sql/
-│
+sql/  
+
+│  
+
 ├── 01_create_bronze_objects.sql       # Create Bronze tables and stages  
 
 ├── 02_create_silver_prices.sql        # Create Silver PRICES table  
